@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html land="en" ng-app="myApp">
+
+<head>
+    <title>Hearthstone Library</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.8/angular-ui-router.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-cookies.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-messages/1.6.0/angular-messages.js"></script>
+    <link rel="stylesheet" type="text/css" href="theme.css">
+</head>
+
+<body background="./hearthstonelogo.jpg">
+    <script type="text/ng-template" id="pages/login.html">
+        <div style="width:400px; margin-right:auto; margin-left:auto;margin-top:200px;">
+            <h3>
+                <div ng-controller="myDatabaseController">
+                    <form name="logForm">
+                        <div class="col-xs-12 form-group">
+                            <h1 style="color:white;" align="center">Login Status - {{message}}</h1>
+                            <input type="text" required class="form-control" placeholder="Username" ng-model="username" id="username" username-verif><br>
+                            <input type="password" required class="form-control" placeholder="Password" ng-model="password" id="password" minlength="3"><br>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block" placeholder=".col-xs-12" ng-click="submit()">Login</button>
+                            <div ng-messages="logForm.$error" class="messages">
+                                <span ng-message="usernameVerif">Username must be longer than 2!</span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </h3>
+        </div>
+
+    </script>
+    <script type="text/ng-template" id="pages/register.html">
+        <div style="width:400px; margin-right:auto; margin-left:auto;margin-top:200px;>
+        <h3>
+            <div ng-controller=" RegisterController " align="center ">
+                <form method="post " action="/users ">
+                    <div class="col-xs-12 " align="center ">
+                        <h1 style="color:white; ">Register</h1>
+                        <input type="text " required class="form-control " placeholder="Username " ng-model="user.user_name " id="r_username " minlength ="3 "><br>
+                        <input type="password " required class="form-control " placeholder="Password " ng-model="user.user_password " id="r_pass " minlength ="3 "><br>
+                        <input type="text " required class="form-control " placeholder="Status " ng-model="user.status " id="r_confirm_pass " minlength ="3 "><br>
+                        <button type="submit " class="btn btn-primary btn-lg btn-block " ng-click="addUser(user) ">Register</button><br>
+                    </div {{message}} </form>
+            </div>
+        </h3>
+        </div>
+    </script>
+    <script type="text/ng-template " id="pages/home.html ">
+        <h1 style="color:white; ">Home</h1>
+        <h3 style="color:white; ">{{message}}</h3>
+    </script>
+    <script type="text/ng-template " id="pages/profile.html ">
+        <h1 style="color:white; ">Profile</h1>
+        <h3 style="color:white; ">{{message}}</h3>
+        <div style="width:400px; margin-right:auto; margin-left:auto;margin-top:200px;>
+            <h3>
+                <form>
+                    <div class="col-xs-12" align="center">
+                        <input type="text" class="form-control" placeholder="Your Current Rank" ng-model="rank.c_rank" id="current_rank"><br>
+                        <button type="button" class="btn btn-primary btn-lg btn-block" ng-click="saveRank(rank)">Save Rank</button><br>
+                        <button type="button" class="btn btn-primary btn-lg btn-block" ng-click="updateRank(rank)">Modify Rank</button><br>
+                        <button type="button" class="btn btn-primary btn-lg btn-block" ng-click="deleteRank(rank)">Delete Rank</button><br>
+                    </div>
+                </form>
+            </h3>
+        </div>
+
+    </script>
+    <script type="text/ng-template" id="pages/cardcollection.html" ng-init="showCards=true">
+        <h1 style="color:white;">Deck Builder</h1>
+        <h3 style="color:white;">{{message}}</h3>
+        <h3 style="color:white;">Filters</h3>
+        <form class="form-inline">
+            <div class="col-xs-2">
+                <h4 style="color:white;float:left; display:inline">Search </h4> <input type="text" class="form-control" value="" ng-model="search" />
+            </div>
+            <h4 style="color:white;float:left; display:inline">Mana Cost Filter </h4>
+            <button type="button" class="btn btn-primary" ng-model="ManaFilter" ng-click="ManaFilter=0;showCards=false">0</button>
+            <button type="button" class="btn btn-primary" ng-model="ManaFilter" ng-click="ManaFilter=1;showCards=false">1</button>
+            <button type="button" class="btn btn-primary" ng-model="ManaFilter" ng-click="ManaFilter=2;showCards=false">2</button>
+            <button type="button" class="btn btn-primary" ng-model="ManaFilter" ng-click="ManaFilter=3;showCards=false">3</button>
+            <button type="button" class="btn btn-primary" ng-model="ManaFilter" ng-click="ManaFilter=4;showCards=false">4</button>
+            <button type="button" class="btn btn-primary" ng-model="ManaFilter" ng-click="ManaFilter=5;showCards=false">5</button>
+            <button type="button" class="btn btn-primary" ng-model="ManaFilter" ng-click="ManaFilter=6;showCards=false">6</button>
+            <button type="button" class="btn btn-primary" ng-model="ManaFilter" ng-click="ManaFilter=7;showCards=false">7</button>
+            <button type="button" class="btn btn-primary" ng-model="ManaFilter" ng-click="ManaFilter=8;showCards=false">8</button>
+            <button type="button" class="btn btn-primary" ng-model="ManaFilter" ng-click="ManaFilter=9;showCards=false">9</button>
+            <button type="button" class="btn btn-primary" ng-model="ManaFilter" ng-click="ManaFilter=10;showCards=false">10</button>
+
+            <h4 ng-controller="cardsController">
+                <div id="cardsList">
+                    <div ng-repeat="card in cards | filter : search : ManaFilter : myFilter" class="cardItem">
+                        <div ng-if="ManaFilter===card.mana" <h3> <img style=" float:left; display:inline" HEIGHT="303" WIDTH="200" ng-src="{{card.image_url}}"> </h3>
+                        </div>
+                    </div>
+                    <div ng-repeat="card in cards | filter : search : ManaFilter : myFilter" class="cardItem">
+                        <div ng-if="showCards===true" <h3> <img style=" float:left; display:inline" HEIGHT="303" WIDTH="200" ng-src="{{card.image_url}}"> </h3>
+                        </div>
+                    </div>
+                </div>
+            </h4>
+        </form>
+    </script>
+    <script type="text/ng-template" id="pages/decks.html">
+        <h1 style="color:white;">Meta Decks(Are very popular ladder decks in the current season)</h1>
+        <h3 style="color:white;">{{message}}</h3>
+
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <h3> <img style=" float:left; display:inline" class="enlarge" HEIGHT="363" WIDTH="240" ng-src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/HERO_09.png"> </h3>
+        </container>
+
+        <container class="description">
+            <h4 style="color:white;">While probably not the newest nor the most exciting to play right now, Dragon Priest has proved itself as a powerful contester in the ladder so far.</h4>
+            <h4 style="color:white;">While the deck itself can be categorized as a mid-range deck it can go toe to toe with the most heaviest of control dekcs and it can withstand early aggresion from aggro decks.</h4>
+            <h4 style="color:white;">The deck's win condition is the insane tempo and resourse generation due to cards like Drakonid Operative and Dragonfire Potion.</h4>
+        </container>
+
+        <container class="containerdivNewLine"></container>
+        <div>
+            <h3><img style="float:left; display:inline" class="metaDeckAligner enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_235.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_235.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_004.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_004.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/BRM_004.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/BRM_004.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_234.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_234.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/AT_116.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/AT_116.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_626.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_626.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_622.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_622.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http://wow.zamimg.com/images/hearthstone/cards/enus/medium/KAR_035.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http://wow.zamimg.com/images/hearthstone/cards/enus/medium/KAR_035.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_605.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_605.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_662.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_662.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http://wow.zamimg.com/images/hearthstone/cards/enus/medium/KAR_062.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http://wow.zamimg.com/images/hearthstone/cards/enus/medium/KAR_062.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/ZAM_1000187.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/AT_017.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/AT_017.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_284.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_284.png"></h3>
+
+
+        </div>
+
+        <container class="containerdivNewLine"></container>
+
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <h3> <img style=" float:left; display:inline" class="enlarge" ng-src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/HERO_07.png"> </h3>
+            <container class="description">
+                <h4 style="color:white;">And old deck that quickly rose to glory after the lauch of Mean Streets of Gadgetzan.</h4>
+                <h4 style="color:white;">Being a control deck it has the really heavy cards that allow it to beat other control decks, however the presence of a huge amount of board clears means it ca defeat aggro as well.</h4>
+                <h4 style="color:white;">The deck's win condition is the Leeroy-poweroverwhelming-faceless combo for an insane 20 damage from no board.</h4>
+            </container>
+        </container>
+
+
+        <container class="containerdivNewLine"></container>
+        <div>
+            <h3><img style="float:left; display:inline" class="metaDeckAligner enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_302.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_316.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/ZAM_1000217.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/BRM_005.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/BRM_006.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_057.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_062.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_303.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_309.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_751.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_312.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_323.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_066.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_790.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/NEW1_021.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_058.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/ZAM_1000187.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_117.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_085.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://wow.zamimg.com/images/hearthstone/cards/enus/medium/OG_174.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="323" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_621.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/AT_111.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_043.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_564.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_116.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_652.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/BRM_028.png"></h3>
+
+        </div>
+
+        <container class="containerdivNewLine"></container>
+
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <h3> <img style=" float:left; display:inline" class="enlarge" ng-src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/HERO_08.png"> </h3>
+            <container class="description">
+                <h4 style="color:white;">While not particulary a popular deck, Reno-Mage has seen an increase in players after the lauch of Mean Streets of Gadgetzan.</h4>
+                <h4 style="color:white;">The decks is basically a jack of all trades trying to survive in a very radical meta, thus it uses a lot of teck cards that you will not see in another decks.</h4>
+                <h4 style="color:white;">The deck has basically no win condition, and it will try to grind out the oppenent throught the course of the game</h4>
+            </container>
+        </container>
+        <container class="containerdivNewLine"></container>
+        <div>
+            <h3><img style="float:left; display:inline" class="metaDeckAligner enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/AT_004.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http://wow.zamimg.com/images/hearthstone/cards/enus/medium/KAR_009.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_024.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/ZAM_1000204.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_295.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http://wow.zamimg.com/images/hearthstone/cards/enus/medium/OG_083.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_065.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_029.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_022.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_033.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/ZAM_1000203.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_028.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http://wow.zamimg.com/images/hearthstone/cards/enus/medium/OG_207.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://wow.zamimg.com/images/hearthstone/cards/enus/medium/KAR_076.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_032.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_120.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_066.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_012.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_790.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/NEW1_021.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_007.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/ZAM_1000187.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_117.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_085.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="323" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_621.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/AT_111.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_284.png"></h3>
+
+        </div>
+
+        <container class="containerdivNewLine"></container>
+
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <h3> <img style=" float:left; display:inline" class="enlarge" ng-src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/HERO_01.png"> </h3>
+            <container class="description">
+                <h4 style="color:white;">Pirate Warrior is a deck that has seen some play in the past, however being overshadowed by the more popular Control Warrior, now after the lauch of Mean Streets of Gadgetzan, the deck has become meta defining.</h4>
+                <h4 style="color:white;">As fast aggro deck it tries to overwhelm the opponent in the early game with high attack, low health minions and weapons.</h4>
+                <h4 style="color:white;">The deck's win condition is hitting the enemy's face and hoping that they can't heal.</h4>
+            </container>
+        </container>
+        <container class="containerdivNewLine"></container>
+        <div>
+            <h3><img style="float:left; display:inline" class="metaDeckAligner enlarge" src="http://wow.zamimg.com/images/hearthstone/cards/enus/medium/OG_312.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http://wow.zamimg.com/images/hearthstone/cards/enus/medium/OG_312.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_409.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_409.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_106.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_106.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_105.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_105.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http://wow.zamimg.com/images/hearthstone/cards/enus/medium/OG_315.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http://wow.zamimg.com/images/hearthstone/cards/enus/medium/OG_315.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_604.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_604.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/NEW1_011.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/NEW1_011.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_408.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_408.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_112.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_112.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_637.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/ZAM_1000194.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_325.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_325.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_146.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_146.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_066.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/NEW1_018.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/NEW1_018.png"></h3>
+
+
+        </div>
+
+        <container class="containerdivNewLine"></container>
+
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <h3> <img style=" float:left; display:inline" class="enlarge" ng-src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/HERO_06.png"> </h3>
+            <container class="description">
+                <h4 style="color:white;">A brand new deck that appeared immedeately after the lauch of Mean Streets of Gadgetzan.</h4>
+                <h4 style="color:white;">This deck has only one function, to destroy other control decks, and that makes it very vulnerable against aggro.</h4>
+                <h4 style="color:white;">The deck's win condition is it's ability to generate infinite cards due to Jade Idol and simply outlast the opponent in the late game.</h4>
+            </container>
+        </container>
+        <container class="containerdivNewLine"></container>
+        <div>
+            <h3><img style="float:left; display:inline" class="metaDeckAligner enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_169.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_169.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_602.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_602.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_013.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_013.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_154.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_154.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http://wow.zamimg.com/images/hearthstone/cards/enus/medium/OG_047.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http://wow.zamimg.com/images/hearthstone/cards/enus/medium/OG_047.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_713.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_713.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http://wow.zamimg.com/images/hearthstone/cards/enus/medium/OG_044.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_012.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/CS2_012.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_164.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_164.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_343.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_343.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_178.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/NEW1_021.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/NEW1_021.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="323" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_715.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="323" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_715.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_284.png"></h3>
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/EX1_284.png"></h3>
+
+            <h3><img style="float:left; display:inline" class="ExtremeImageCollapse enlarge" HEIGHT="303" WIDTH="200" src="http://media.services.zam.com/v1/media/byName/hs/cards/enus/CFM_652.png"></h3>
+
+        </div>
+
+
+    </script>
+    <script type="text/ng-template" id="pages/exp.html">
+        <h1 style="color:white;">Expansions&Adventures</h1>
+        <h3 style="color:white;">{{message}}</h3>
+
+        <container style="float:left; display:inline" class="LeftSidePadder" ng-init="madeChoice='nothing'">
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseSetBasic='basic'" ng-click="madeChoice=choseSetBasic">Basic</button>
+        </container>
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseSetNaxx='con'" ng-click="madeChoice=choseSetNaxx">Curse of Naxxramas </button>
+        </container>
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseSetGVG='gvg'" ng-click="madeChoice=choseSetGVG">Goblins vs Gnomes </button>
+        </container>
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseSetBlackRock='brm'" ng-click="madeChoice=choseSetBlackRock">Blackrock Mountain </button>
+        </container>
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseSetTheGrandT='tgt'" ng-click="madeChoice=choseSetTheGrandT">The Grand Tournament </button>
+        </container>
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseSetExplorers='loe'" ng-click="madeChoice=choseSetExplorers">League of Explorers </button>
+        </container>
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseSetWhispers='wtog'" ng-click="madeChoice=choseSetWhispers">Whispers of the Old Gods </button>
+        </container>
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseSetKarazhan='kar'" ng-click="madeChoice=choseSetKarazhan">One Night in Karazhan </button>
+        </container>
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseSetMeanStreets='gadgetzan'" ng-click="madeChoice=choseSetMeanStreets">Mean Streets of Gadgetzan </button>
+        </container>
+
+        <h4 ng-controller="Expansions&AdventuresController">
+            <div id="cardsList">
+                <div ng-repeat="card in cards | filter:madeChoice" ng-init="expFilter='set'">
+                    <div ng-if="card.set===madeChoice && card.type!='hero'">
+                        <container style=" float:left; display:inline" class="LeftSidePadder">
+                            <h3> <img style=" float:left; display:inline" HEIGHT="303" WIDTH="200" ng-src="{{card.image_url}}"> </h3>
+                        </container>
+                    </div>
+                </div>
+            </div>
+        </h4>
+
+    </script>
+    <script type="text/ng-template" id="pages/about.html">
+        <h1 style="color:white;">Here you will be able to build your own deck</h1>
+        <h3 style="color:white;">{{message}}</h3>
+
+
+
+        <container style="float:left; display:inline" class="LeftSidePadder" ng-init="madeChoice='nothing'">
+            <h3> <img style=" float:left; display:inline" ng-src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/HERO_01.png"> </h3>
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseHeroWarrior='warrior'" ng-click="madeChoice=choseHeroWarrior">Choose Warrior</button>
+        </container>
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <h3> <img style=" float:left; display:inline" ng-src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/HERO_02.png"> </h3>
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseHeroShaman='shaman'" ng-click="madeChoice=choseHeroShaman">Choose Shaman </button>
+        </container>
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <h3> <img style=" float:left; display:inline" ng-src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/HERO_03.png"> </h3>
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseHeroRogue='rogue'" ng-click="madeChoice=choseHeroRogue">Choose Rogue </button>
+        </container>
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <h3> <img style=" float:left; display:inline" ng-src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/HERO_04.png"> </h3>
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseHeroPaladin='paladin'" ng-click="madeChoice=choseHeroPaladin">Choose Paladin </button>
+        </container>
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <h3> <img style=" float:left; display:inline" ng-src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/HERO_05.png"> </h3>
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseHeroHunter='hunter'" ng-click="madeChoice=choseHeroHunter">Choose Hunter </button>
+        </container>
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <h3> <img style=" float:left; display:inline" ng-src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/HERO_06.png"> </h3>
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseHeroDruid='druid'" ng-click="madeChoice=choseHeroDruid">Choose Druid </button>
+        </container>
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <h3> <img style=" float:left; display:inline" ng-src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/HERO_07.png"> </h3>
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseHeroWalock='warlock'" ng-click="madeChoice=choseHeroWalock">Choose Warlock </button>
+        </container>
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <h3> <img style=" float:left; display:inline" ng-src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/HERO_08.png"> </h3>
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseHeroMage='mage'" ng-click="madeChoice=choseHeroMage">Choose Mage </button>
+        </container>
+        <container style="float:left; display:inline" class="LeftSidePadder">
+            <h3> <img style=" float:left; display:inline" ng-src="http:\/\/wow.zamimg.com\/images\/hearthstone\/cards\/enus\/medium\/HERO_09.png"> </h3>
+            <button type="button" class="btn btn-primary btn-lg btn-block" ng-init="choseHeroPriest='priest'" ng-click="madeChoice=choseHeroPriest">Choose Priest </button>
+        </container>
+
+        <h4 ng-controller="AboutController">
+            <div id="cardsList">
+                <div ng-repeat="card in cards | filter:madeChoice" ng-init="heroFilter='hero'">
+                    <div ng-if="card.hero===madeChoice">
+                        <container style=" float:left; display:inline" class="LeftSidePadder">
+                            <h3> <img style=" float:left; display:inline" HEIGHT="303" WIDTH="200" ng-src="{{card.image_url}}"> </h3>
+                            <button type="button" class="btn btn-success btn-lg btn-block" ng-click="addItem(card.image_url);">Pick Card</button>
+                        </container>
+                    </div>
+                </div>
+
+                <div ng-repeat="card in cards" style="float:below;display:inline">
+                    <div ng-if="card.hero===null" <container style=" float:left; display:inline" class="LeftSidePadder">
+                        <h3> <img style=" float:left; display:inline" HEIGHT="303" WIDTH="200" ng-src="{{card.image_url}}"> </h3>
+                        <button type="button" class="btn btn-success btn-lg btn-block" ng-click="addItem(card.image_url);">Pick Card</button>
+                        </container>
+                    </div>
+                </div>
+
+                <container class="containerdivNewLine">
+                    <h3 style="color:white;"> Current Deck Contains: {{currentNumber}}</h3>
+                    <div ng-repeat="item in items track by $index" <container style="float:left;display:inline">
+                        <h3><img style="float:left; display:inline" HEIGHT="303" WIDTH="200" class="ImageCollapse" src="{{item}}"></h3>
+                </container>
+                </div>
+                </container>
+            </div>
+        </h4>
+    </script>
+    <nav class="navbar navbar-inverse">
+        <ul class="nav navbar-nav">
+            <a href="#/login" class="btn btn-info">Login</a>
+            <a href="#/register" class="btn btn-info">Register</a>
+            <a href="#/home" class="btn btn-success">Home</a>
+            <a href="#/profile" class="btn btn-success">Profile</a>
+            <a href="#/cardcollection" class="btn btn-success">Library</a>
+            <a href="#/about" class="btn btn-success">Deck Builder</a>
+            <a href="#/decks" class="btn btn-success">Meta Decks</a>
+            <a href="#/exp" class="btn btn-success">Expansions & Adventures</a>
+        </ul>
+    </nav>
+    <div ng-view></div>
+
+    <script src="app.js"></script>
+    <script src="cardsController.js"></script>
+</body>
+
+</html>
